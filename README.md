@@ -1,41 +1,120 @@
-# RPIPicoFreeRTOSCourse
-Course Repository for Udemy Course: [FreeRTOS on Raspberry PI PICO](https://www.udemy.com/course/draft/4868484/?referralCode=C5A9A19C93919A9DA294)
+I have modified the README.txt on 01/10/2025. 
+By Arthur MICHEL F14128806
 
-16 Examples of which 15 demonstrate FreeRTOS features on the Raspberry PI Pico or RP2040 board. One of which that focuses on the SDK multicore API functions.
+Here is my main.cpp :
 
-## 2 Pico Setup
-
-+ BlinkLEDExt: Blink an external LED on GPIO using a function approach.
-
-## 4 Tasks
-
-+ Blink Ext: Blink an external LED on GPIO 0, encapsulating the task within a Class.
-+ MultiBlink: Blink multiple LEDs using different task priority
-+ BlinkPriority: Use priority with tasks that create CPU workload
-+ BlinkAssignment: Explore priority
+/***
+ * Demo program to flash an LED attached to GPIO PAD 0.
+ * Uses FreeRTOS Task
+ * Jon Durrant
+ * 15-Aug-2022
+ */
 
 
-## 5 Semaphore
+#include "pico/stdlib.h"
 
-+ SharedLED: Defined shared LED which will be used by two blink LED pair objects. Creating a contention scenario that requires semaphores. 
-+ LimitWorkers: Use count semaphore to limit the number of active tasks using a resource
-+ AssignmentLimitWorkers: Explore counting semaphores in assignment
-+ BlinkWorker: Create a scenario of workers that will blink out of sync
-+ TaskNotification: Use task notification as two semaphores to synchronize the two tasks
+#include "FreeRTOS.h"
+#include "task.h"
+#include <stdio.h>
 
 
-## 6 Queue
+//Standard Task priority
+#define TASK_PRIORITY		( tskIDLE_PRIORITY + 1UL )
 
-+ CountLed: Display a binary value on four LEDs (0 to 15) that is being sent to the task via a queue
-+ AssignmentQueue: Assignment question to use queues
+//LED PAD to use
+#define LED_PAD				25
 
-## 7 MessageBuf
+//Blink Delay
+#define DELAY				500
 
-+ JsonCmds: Use of message buffer to send a JSON strong to a task. Decode the JSON and display the contained value on four LEDs
-+ SerialCmds: Two Pico communicating together over UART to display the same value on four LEDs in sync
 
-## 8 Multicore
+/***
+ * Main task to blink external LED
+ * @param params - unused
+ */
+void mainTask(void *params){
 
-+ sdKMulticore: Use both cores and send a random number from core 0 to core 1 using the SDK FIFO queue
-+ FreeRTOSSMP: Use SMP to run tasks across both cores and some associated with single core
+	printf("Main task started\n");
 
+	const uint ledPad = LED_PAD;
+	gpio_init(ledPad);
+
+	gpio_set_dir(ledPad, GPIO_OUT);
+
+	while (true) { // Loop forever
+		gpio_put(ledPad, 1);
+		vTaskDelay(DELAY);
+
+        printf("GO - Arthur MICHEL F14128806\n");
+
+		gpio_put(ledPad, 0);
+		vTaskDelay(DELAY);
+	}
+}
+
+/***
+ * Launch the tasks and scheduler
+ */
+void vLaunch( void) {
+
+	//Start blink task
+    TaskHandle_t task;
+    xTaskCreate(mainTask, "MainThread", configMINIMAL_STACK_SIZE, NULL, TASK_PRIORITY, &task);
+
+    /* Start the tasks and timer running. */
+    vTaskStartScheduler();
+}
+
+/***
+ * Main
+ * @return
+ */
+int main( void )
+{
+	//Setup serial over USB and give a few seconds to settle before we start
+    stdio_init_all();
+
+    while (!stdio_usb_connected()) {
+        sleep_ms(10000);
+    }
+    printf("USB connected!\n");
+
+    sleep_ms(5000);
+    printf("GO\n");
+
+    //Start tasks and scheduler
+    const char *rtos_name = "FreeRTOS";
+    printf("Starting %s on core 0:\n", rtos_name);
+    vLaunch();
+
+
+    return 0;
+}
+
+
+Here is my CMakeLists.txt :
+
+add_executable(${NAME}
+        main.cpp
+        )
+
+# Pull in our pico_stdlib which pulls in commonly used features
+target_link_libraries(${NAME} 
+	 pico_stdlib
+     FreeRTOS-Kernel-Heap4 
+	)
+	
+target_include_directories(${NAME} PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}
+     )
+     
+target_compile_definitions(${NAME} PRIVATE
+    configNUM_CORES=2
+)
+
+# create map/bin/hex file etc.
+pico_add_extra_outputs(${NAME})
+
+# enable usb output, disable uart output
+pico_enable_stdio_usb(${NAME} 1)
+pico_enable_stdio_uart(${NAME} 0)
