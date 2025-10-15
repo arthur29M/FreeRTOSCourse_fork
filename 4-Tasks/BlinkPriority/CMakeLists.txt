@@ -1,37 +1,30 @@
-cmake_minimum_required(VERSION 3.12)
+add_executable(${NAME}
+        main.cpp
+        BlinkAgent.cpp
+        BlinkWorker.cpp
+        BlinkHeavy.cpp
+        Agent.cpp
+        )
 
-# Change your executable name to something creative!
-set(NAME Blink) # <-- Name your project/executable here!
+# Pull in our pico_stdlib which pulls in commonly used features
+target_link_libraries(${NAME} 
+	 pico_stdlib
+     FreeRTOS-Kernel-Heap4
+     freertos_config 
+	)
+	
+target_include_directories(${NAME} PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}
+     )
+     
 
-include(pico_sdk_import.cmake)
+# create map/bin/hex file etc.
+pico_add_extra_outputs(${NAME})
 
-# Gooey boilerplate
-project(${NAME} C CXX ASM)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
-
-# Initialize the SDK
-pico_sdk_init()
-
-#include Libraries
-SET(FREERTOS_KERNEL_PATH "${CMAKE_CURRENT_LIST_DIR}/../../lib/FreeRTOS-Kernel" CACHE STRING "Course Common Lib")
-SET(FREERTOS_CONFIG_FILE_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/port/FreeRTOS-Kernel" CACHE STRING "Local Config")
-include_directories("${FREERTOS_CONFIG_FILE_DIRECTORY}") 
-include(FreeRTOS_Kernel_import.cmake)
-
-
-#Add main source directory
-add_subdirectory(src)
-
-#Set up files for the release packages
-install(CODE "execute_process(COMMAND $ENV{HOME}/bin/picoDeploy.sh ${CMAKE_CURRENT_BINARY_DIR}/src/${NAME}.elf)")
-
-# Set up files for the release packages
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/src/${NAME}.uf2
-    DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
+# enable usb output, and uart output
+pico_enable_stdio_usb(${NAME} 1)
+pico_enable_stdio_uart(${NAME} 1)
+target_compile_definitions(${NAME} PRIVATE
+    PICO_DEFAULT_UART_RX_PIN=17
+    PICO_DEFAULT_UART_TX_PIN=16
 )
-
-set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
-set(CPACK_GENERATOR "ZIP" "TGZ")
-include(CPack)
