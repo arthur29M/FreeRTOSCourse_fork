@@ -88,7 +88,8 @@ void mainTask(void *params){
 
 	printf("Main task started\n");
 
-	blink.start("Blink", TASK_PRIORITY);
+	//blink.start("Blink", TASK_PRIORITY);
+	blink.start("Blink", TASK_PRIORITY +3); //THIS WAS CHANGED TO OBSERVE PRIORITY DIFFERENCES ON THE PIPICO BLINKING
 	worker1.start("Worker 1", TASK_PRIORITY+ 1);
 	worker2.start("Worker 2", TASK_PRIORITY + 2);
 
