@@ -30,3 +30,6 @@ Monitor serial output via the VSCode terminal to observe the priority changes
 
 Modify priorities in main.cpp and observe scheduler behavior.
 
+UPDATE on 22/10/2025
+
+Updated MultiBlink to add more leds and more workers with different priority.
