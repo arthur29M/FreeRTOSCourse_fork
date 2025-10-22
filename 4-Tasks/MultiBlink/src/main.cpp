@@ -25,6 +25,11 @@
 #define LED3_PAD				4
 #define LED4_PAD				5
 
+#define LED5_PAD				1
+#define LED6_PAD				6
+
+#define LED7_PAD				7
+#define LED8_PAD				8
 
 
 void runTimeStats(   ){
@@ -88,6 +93,12 @@ void mainTask(void *params){
 	BlinkAgent worker3(LED3_PAD);
 	BlinkAgent worker4(LED4_PAD);
 
+	BlinkAgent worker5(LED5_PAD);
+	BlinkAgent worker6(LED6_PAD);
+
+	BlinkAgent worker7(LED7_PAD);
+	BlinkAgent worker8(LED8_PAD);
+
 	printf("Main task started\n");
 
 	blink.start("Blink", TASK_PRIORITY);
@@ -95,6 +106,12 @@ void mainTask(void *params){
 	worker2.start("Worker 2", TASK_PRIORITY + 1);
 	worker3.start("Worker 3", TASK_PRIORITY + 2);
 	worker4.start("Worker 4", TASK_PRIORITY + 3);
+
+	worker5.start("Worker 5", TASK_PRIORITY + 4);
+	worker6.start("Worker 6", TASK_PRIORITY + 5);
+
+	worker7.start("Worker 7", TASK_PRIORITY + 6);
+	worker8.start("Worker 8", TASK_PRIORITY + 7);
 
 	while (true) { // Loop forever
 		runTimeStats();
