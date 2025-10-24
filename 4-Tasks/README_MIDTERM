@@ -1,0 +1,29 @@
+1 - MIDTERM Overview :
+
+The BlinkAssignment project demonstrates advanced multitasking on the Raspberry Pi Pico using FreeRTOS.
+Key features: 
+- Blink multiple external LEDs on GPIO pins 0–7.
+- Blink onboard LED (GPIO 25) concurrently.
+- Mix of task types: BlinkAgent, BlinkWorker, BlinkHeavy.
+- Added stress-test CPU tasks to explore task limits.
+
+Monitor using FreeRTOS runTimeStats() and USB serial output.
+The project focus on task priorities, stack usage, and task scheduling environment.
+
+In total we are running 3 styles of tasks described above. Additionally I decided to stress test the board by adding "useless" cpu load tasks.
+
+2. SOP
+Press and hold the BOOTSEL button on the Pico.
+Connect the Pico to USB (or drag .uf2 to the RPI-RP2 drive).
+Release the BOOTSEL button.
+Pico will reboot and start running the program.
+Open VSCode Serial Monitor (or any terminal software).
+The program will start the following tasks:
+  External LEDs (GPIO 0–7) blink via BlinkAgent, BlinkWorker, BlinkHeavy tasks.
+  Onboard LED (GPIO 25) blinking task.
+  Optional CPU stress-test tasks for performance evaluation.
+  Monitor system stats via runTimeStats() which prints:
+  Task number and name
+  Current and base priority
+  Stack high-water mark
+  Heap usage (available memory, blocks, allocations, frees)
