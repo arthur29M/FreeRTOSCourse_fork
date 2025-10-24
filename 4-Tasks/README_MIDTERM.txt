@@ -27,3 +27,8 @@ The program will start the following tasks:
   Current and base priority
   Stack high-water mark
   Heap usage (available memory, blocks, allocations, frees)
+
+3. Daily changes
+Added all 8 LEDS
+Added Onboard LED blinkage
+Added Load stress test cpu tasks
