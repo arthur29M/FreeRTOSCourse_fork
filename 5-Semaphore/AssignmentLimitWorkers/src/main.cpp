@@ -90,7 +90,7 @@ void mainTask(void *params){
 	BlinkWorker worker3(LED3_PAD);
 	BlinkWorker worker4(LED4_PAD);
 
-	SemaphoreHandle_t sem = xSemaphoreCreateCounting(3, 2);
+	SemaphoreHandle_t sem = xSemaphoreCreateCounting(4, 2); //modified here
 	worker1.setSemaphore(sem);
 	worker2.setSemaphore(sem);
 	worker3.setSemaphore(sem);
