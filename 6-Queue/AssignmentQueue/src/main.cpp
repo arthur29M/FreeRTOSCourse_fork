@@ -21,7 +21,7 @@
 #define TASK_PRIORITY		( tskIDLE_PRIORITY + 1UL )
 
 //LED PAD to use
-#define LED_PAD				0
+#define LED_PAD				25
 #define LED1_PAD			2
 #define LED2_PAD			3
 #define LED3_PAD			4
@@ -91,6 +91,8 @@ void mainTask(void *params){
 	blink.start("Blink", TASK_PRIORITY);
 	counter.start("Counter", TASK_PRIORITY);
 
+	static uint8_t pattern[] = {0x1, 0x3, 0x7, 0xF};
+	
 	while (true) { // Loop forever
 		runTimeStats();
 		uint8_t r = rand() & 0x0F;
