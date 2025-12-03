@@ -31,6 +31,8 @@
 #define LED4_PAD			5
 #define LED5_PAD		   15
 
+#define LED6_PAD			6
+
 
 void runTimeStats(   ){
 	TaskStatus_t *pxTaskStatusArray;
@@ -104,9 +106,9 @@ void saltRand(){
 void mainTask(void *params){
 	char line[80];
 	BlinkAgent blink(LED_PAD);
-	CounterAgent counter(LED1_PAD, LED2_PAD, LED3_PAD, LED4_PAD);
+	CounterAgent counter(LED1_PAD, LED2_PAD, LED3_PAD, LED4_PAD); 
 	DecoderAgent decoder(&counter);
-	IOAgent ioAgent(&decoder, LED5_PAD);
+	IOAgent ioAgent(&decoder, LED5_PAD, LED6_PAD); //added led6_pad
 
 	printf("Main task started\n");
 	saltRand();
